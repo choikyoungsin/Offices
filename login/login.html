@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Single+Day&display=swap" rel="stylesheet">
+    <title>Document</title>
+    <style>
+        *{margin:0; padding:0; box-sizing: border-box;}
+        body{ width:1920px; height:1280px;}
+        #Wrap{background: url(./img/background.jpg) no-repeat; width:100%; height:100%; position: relative;}
+        #Wrap img{width:100%; height:100%; display:block;}
+      
+        h1{text-align:center; font-size: 38px; color:rgb(116, 18, 98); margin-bottom:20px; font-family: 'Single Day', cursive; text-shadow: 5px 10px 10px rgb(44, 4, 4);}
+        fieldset{width:50%; height:90%; border:none; margin:20px auto; padding:3%; box-sizing: border-box; position: absolute; top:0; left:50%; transform: translateX(-50%);}
+        ul{list-style: none;}
+        li{ margin:0 auto; height:40px;   width:500px;}
+        label{font-family: 'Single Day', cursive; font-size:25px; font-weight: bold;
+                
+    }
+        
+        input{font-family: 'Single Day', cursive; font-size:25px; border-radius: 10px; border:none;  padding:0 10px; box-sizing: border-box;}
+        input:hover{box-shadow:1px 1px 10px blue;}
+        ul li:not(:nth-child(9)) input{
+            float:right; width:300px;
+        }
+        .center{ text-align: center; display:inline-block; margin-left:180px;}
+        .center label{margin-right:10px;}
+        strong{font-family: 'Single Day', cursive; font-size:25px; font-weight: bold; text-align: center;   display:inline-block; margin-bottom:5px;}
+        .m1{color:blue;}
+        .f1{color:red; margin-left:130px;}
+        span{display: inline-block; font-weight: bold; margin-left:200px; font-size:20px;}
+       #submit{margin:0 auto; width:500px; background: pink; cursor: pointer;}
+       #submit:hover{background:black; color:white; box-shadow:1px 1px 10px purple;}
+        legend{display:none; }
+        #tel1::placeholder{color:rgb(234, 190, 255); font-weight: 400; }
+        .check{position: absolute; top: 125px; left:750px; background:#ccc; color:#8f8f8f; font-size: 18px; padding: 5px 10px; border-radius: 15px; cursor: pointer;}
+       
+        
+    </style>
+    <script src="./js/script.js" defer></script>
+</head>
+<body>
+    
+   <div id="Wrap">
+        <fieldset>
+            <legend>회원가입</legend>
+            <h1>회원가입</h1>
+            <strong class="check">중복확인</strong>
+            <form action="./result.html" method="post" name="form1">
+                <ul>
+                    <li>
+                        <label for="id1" class="w">아이디</label>
+                        <input type="text" required size="30" id="id1">
+                    </li>
+
+                    <li><span id="id1Msg"></span></li>
+                    <li>
+                        <label for="pw1" class="w">비밀번호</label>
+                        <input type="password" required size="30" id="pw1">
+                    </li>
+                    <li><span id="pw1Msg"></span></li>
+                    <li>
+                        <label for="pw2" class="w">비밀번호확인</label>
+                        <input type="password" required size="30" id="pw2">
+                    </li>
+                    <li><span id="pw2Msg"></span></li>
+                    <li>
+                        <label for="name1" class="w">이름</label>
+                        <input type="text" required size="30" id="name1">
+                    </li>
+                        <li><span id="name1Msg"></span></li>
+                    <li>
+                        <strong class="w">성별</strong>
+                       <div class="center">
+                            <label for="m" class="m1">남</label>
+                            <input type="radio" name="gender" id="m">
+                      
+                            <label for="f" class="f1">여</label>
+                            <input type="radio" name="gender" id="f">
+                       </div>
+                        
+                    </li>
+                        <li><span id="gender1Msg"></span></li>
+                    </li>
+                    <li>
+                        <label for="email1" class="w">이메일</label>
+                        <input type="email" required size="30" id="email1">
+                    </li>
+                      <li><span id="email1Msg"></span></li>
+                    <li>
+                        <label for="tel1" class="w">전화번호</label>
+                        <input type="text" placeholder="'-' 빼고 입력해주세요"required size="30" id="tel1">
+                    </li>
+                       <li><span id="tel1Msg"></span></li>
+                    <li>
+                        <input type="submit" class="black" value="회원가입" id="submit">
+                    </li>
+                </ul>
+            </form>
+        </fieldset>
+
+        
+   </div>
+    
+       
+</body>
+</html>

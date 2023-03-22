@@ -1,0 +1,856 @@
+//모바일에서 전화번호 클릭시 전화걸기(ie에서 클릭 안되게)
+jQuery(function($){
+	$(".tel-link").click(function() {
+		if(navigator.userAgent.indexOf("MSIE") > -1) return false;
+			else if(navigator.userAgent.indexOf("Trident/7.0") > -1) return false;
+	});
+});
+
+
+// 화면 해상도
+var nowZoom = 100; // 현재비율
+var maxZoom = 200; // 최대비율(500으로 하면 5배 커진다)
+var minZoom = 80; // 최소비율
+
+function zoomIn()
+{
+    if (nowZoom < maxZoom)
+    {
+        nowZoom += 10; // 10%씩 커진다.
+    }
+    else
+    {
+        return;
+    }
+    document.body.style.zoom = nowZoom + "%";
+}
+
+function zoomOut()
+{
+    if (nowZoom > minZoom)
+    {
+        nowZoom -= 10; // 10씩 작아진다.
+    }
+    else
+    {
+        return;
+    }
+    document.body.style.zoom = nowZoom + "%";
+}
+
+function zoomDefault()
+{
+    nowZoom = 100;
+    document.body.style.zoom = nowZoom + "%";
+}
+
+function printPage()
+{
+	var initBody;
+	window.onbeforeprint = function()
+		{
+		initBody = document.body.innerHTML;
+		document.body.innerHTML =  document.getElementById('printPage').innerHTML;
+		};
+		window.onafterprint = function(){
+			document.body.innerHTML = initBody;
+			};
+			window.print();
+			return false;
+}
+
+
+
+
+
+//select language
+$(window).load(function() {
+
+	$(".language").click(function(event){
+
+		if (  $("#language_list").css("display") == "none" ) {
+			$("#language_list").css("display","block");
+		} else {
+			$("#language_list").css("display","none");
+		}
+
+		event.preventDefault();
+	});
+
+	$("#language").mouseleave(function(event){
+		$("#language_list").css("display","none");
+
+		event.preventDefault();
+	});
+});
+
+
+
+//트위터 공유
+function twitter(msg){
+	var url = window.location.toString();
+	var href = "http://twitter.com/share?text=" + encodeURIComponent(msg) + "&url=" + encodeURIComponent(url);
+	var winProps = 'height=300, width=500, resizable=yes, scrollvars=yes';
+	var newWin = open(href,'twitter',winProps);
+
+	if(newWin){
+		newWin.focus();
+	}
+}
+
+//페이스북 공유
+function facebook(msg,image){
+	var url = window.location.toString();
+	var href = "http://www.facebook.com/sharer.php?s=100&p[url]=" + encodeURIComponent(url) + "&p[images][0] =" + encodeURIComponent(image);
+	var winProps = 'height=300, width=500, resizable=yes, scrollvars=yes';
+	var newWin = open(href,'facebook',winProps);
+
+	if(newWin){
+		newWin.focus();
+	}
+}
+
+
+//카카오스토리 공유
+function kakaostory(msg) {
+	var url = window.location.toString();
+  Kakao.Story.share({
+    url: encodeURIComponent(url),
+    text: msg
+  });
+}
+
+
+
+//웹 메뉴
+$(document).ready(function(){
+	setGnbMenu();
+	setLnbMenu();
+	//Smart Navigation
+	$('.header_smart a.open').click(function(){
+		if($('.header_smart').css('top') == '-277px') {
+			$('.header_smart').animate({'top':'0px'},'swing');
+			//$('.header_smart').css('z-index',1000);
+			$('.header_smart .show').find('img').attr('src',$('.header_smart .show').find('img').attr('src').replace('_show','_hide'));
+			$(this).addClass('close');
+		} else {
+			$('.header_smart').animate({'top':'-277px'},'swing');
+			//$('.header_smart').css('z-index',900);
+			$('.header_smart .show').find('img').attr('src',$('.header_smart .show').find('img').attr('src').replace('_hide','_show'));
+			$(this).removeClass('close');
+		}
+	});
+
+
+	//gnb
+	$('.gnb_wrap .submenu').css({'height':'0'});
+	$('.gnb_wrap .gnb>li').on('mouseenter focusin',function(){
+		$(this).addClass('on').siblings().removeClass('on');
+		if ( $(this).children(".submenu").length > 0 ) {
+			$('.gnb_wrap .gnb>li').stop().animate({'height':'392px'},'swing');
+			$('.gnb_wrap .submenu').stop().animate({'height':'392px'},'swing');
+			//$('.gnb_wrap').css('border-bottom','0');
+			//$('.gnb_wrap .submenu').css('border-bottom','1px solid #aaa');
+		} else {
+			$('.gnb_wrap .gnb>li').stop().css({'height':'80px'});
+			//$(this).children(".submenu").stop().animate({'height':'0'});
+		}
+	});
+	$('.gnb_wrap .gnb').on('mouseleave focusout',function(){
+		//$('.submenu').stop().animate({'height':'392px'},'swing');
+		$('.gnb_wrap .gnb>li').stop().animate({'height':'80px'},'swing',function(){
+			$('.gnb_wrap .gnb>li').removeClass('on');
+			//$('.gnb_wrap').css('border-bottom','2px solid #0072bb');
+			//$('.gnb_wrap .submenu').css('border-bottom','0');
+		});
+		$('.gnb_wrap .submenu').stop().animate({'height':'0'},'swing');
+
+
+	});
+
+	//lnb
+	/*$.each($('.lnb>ul>li').has('>ul'),function(){
+		$(this).addClass('arrow');//하위메뉴가 있다면 .arrow추가
+		$(this).find('>a').click(function(){
+			$(this).parent().toggleClass('on');
+		});
+	});*/
+	$('.lnb_menu > li').find('>a').click(function(){
+		$(this).parent().toggleClass('on');
+	});
+
+
+	$('.lnb_menu').on('mouseleave',function(){
+		$('.lnb_menu > li').removeClass('on');
+		setLnbMenu();
+	});
+
+
+	//전체메뉴 열고닫기
+	$('.all_view').click(function(){
+		$('.all_menu').toggle();
+	});
+	$('.all_menu a.close').click(function(){
+		$('.all_menu').hide();
+	});
+
+}); //ready end
+
+
+
+// 선택 메뉴 on
+var depth1 = 0;
+var depth2 = 0;
+var depth3 = 0;
+function setLnbMenu(){
+	$('.lnb_menu > li:nth-child(' + depth2 + ')').addClass('on');
+	//$('.lnb_menu > li:nth-child(' + depth2 + ') > ul > li:nth-child(' + depth3 + ')').addClass('on');
+	$('.lnb_menu > li:nth-child(' + depth2 + ')').each(function(){
+		$(this).addClass('on');
+	});
+	$('.lnb_menu > li').each(function(){
+		if($(this).find('>ul').hasClass('sub_menu')){
+			$(this).addClass('arrow');
+		}
+	});
+}
+function setGnbMenu(){
+	$('.gnb_wrap .gnb>li:nth-child('+depth1+')').each(function(){
+		$(this).find('h2>a').addClass('on');
+	});
+}
+
+
+
+
+
+
+
+//모바일 전체메뉴
+
+$(document).ready(function(){
+	//마스크
+	var handler = function(e){
+		e.preventDefault();
+	}
+	function wrapWindowByMask(){
+		var maskHeight = $(document).height();
+		var maskWidth = $(window).width();
+
+		$('#mask').css({'width':maskWidth,'height':maskHeight});
+		$('#mask').fadeTo("slow",0.6);
+
+	}
+
+	$('.search_area').hide();
+	$(function() {
+		$(".btn_search.search_open").click(function(e){
+			$('.search_area').show();
+			$("body").css("overflow","hidden");
+			if ($(this).hasClass("active")) {
+				$(this).removeClass("active");
+				e.preventDefault();
+				$('#mask').hide();
+				$('.search_area').hide();
+				$(window).unbind('touchmove', handler);
+
+			} else {
+				$(this).addClass("active");
+				e.preventDefault();
+				wrapWindowByMask();
+				$(window).bind('touchmove', handler);
+			}
+
+		$('.btn_search.search_close').click(function(){
+			$(this).parent().parent().find('a.search_open').focus();
+			$("body").css("overflow","auto");
+			$(".search_open").removeClass("active");
+			$('.search_area').hide();
+			$('#mask').hide();
+		});
+		return false;
+		});
+
+		var allmenuWidth = $(window).width();
+		$('.all_menu2').css({'left' : -allmenuWidth});
+		$(".btn_nav2.open").click(function(e){
+			$(this).addClass("active");
+			$("body").css("overflow-y","hidden");
+			$(".all_menu2").css("display","block");
+			e.preventDefault();
+			wrapWindowByMask();
+			$('#mask').css({'background' : 'none' , "margin-left" : "210px"});
+			$(".all_menu2").animate({left:0},200);
+		
+			return false;
+		});
+		$('.btn_nav2.close').click(function(){
+			$("body").css("overflow-y","auto");
+			$(".all_menu2").animate({left:-allmenuWidth},200);
+			$(".all_menu2").css("display","none");
+			$(".btn_nav2.open").removeClass("active");
+			$('#mask').css({'background' : '#000' , "margin-left" : "0px"});
+			$('#mask').hide();
+
+			return false;
+		});
+		
+		$(".btn_right.open, .m_sns .btn_sns").click(function(e){
+			var navheight = $('.mobile-cs > div').height()+100;
+			var bodyheight = $('body').height();
+			if(navheight > bodyheight) $('#wrap').css('height',navheight);
+			
+			$(this).addClass("active");
+			$("body").css("overflow-y","hidden");
+			$(".mobile-cs").css("display","block");
+			e.preventDefault();
+			wrapWindowByMask();
+			$('#mask').css({'background' : 'none' , "margin-right" : "280px"});
+			$(".mobile-cs").animate({right:0},200);
+			
+			return false;
+		});
+		
+		
+		
+		$('.btn_right.close').click(function(){
+			$("body").css("overflow-y","auto");
+			$(".mobile-cs").animate({right:-allmenuWidth},200);
+			$(".mobile-cs").css("display","none");
+			$(".btn_right.open").removeClass("active");
+			$('#mask').css({'background' : '#000' , "margin-right" : "0px"});
+			$('#mask').hide();
+
+			return false;
+		});
+
+
+		$('#mask').click(function () {
+			$(this).css({'background' : '#000' , "margin-left" : "0px"});
+			$(this).hide();
+			$("body").css("overflow","auto");
+			$(".all_menu2").animate({left:-allmenuWidth},200);
+			$(".all_menu2").css("display","none");
+			$(".btn_nav2.open").removeClass("active");
+			$(".search_open").removeClass("active");
+			$(this).parent().parent().find(".search_area").hide();
+			$(window).unbind('touchmove', handler);
+		});
+	});
+
+	$('.m-global_site li:last-child a').css({'background' : 'none'});
+
+});
+
+$(document).bind('mobileinit', function(){
+	// jquery mobile ajax 끄기
+	$.mobile.ajaxEnabled = false;
+});
+
+$(window).resize(function() {
+	 //var allmenuWidth = $(window).width();
+	 if($(document.activeElement).attr('type') === 'text') {
+
+    } else {
+       $("body").css("overflow","auto");
+		//$(".all_menu2").animate({left:-allmenuWidth},100);
+		//$(".all_menu2").css ('left',-allmenuWidth);
+		$(".btn_nav2.open").removeClass("active");
+
+		$(".search_open").removeClass("active");
+		$('.search_area').hide();
+
+		$('#mask').hide();
+    }
+});
+
+var navCurrentParam1;
+var navCurrentParam2;
+var navCurrentParam3;
+$(function() {
+	var $topnav = $('.all_menu2 .all_menu2_con'),
+		$topnavmn = $topnav.find('>li'),
+		$topnavsbmn = $topnavmn.find('>ul');
+
+	$topnavmn.children('a').click(function() {
+		if ($(this).parent().is('li:has("ul")')) {
+			if (!$(this).is('.on')) {
+				$topnavmn.children('a').removeClass('on');
+				$topnavsbmn.slideUp(250).find('>li >ul').hide();
+				$(this).addClass('on');
+				$(this).parent().find('>ul').slideDown(250).find('>li a').removeClass('on');
+			} else {
+				$(this).removeClass('on');
+				$(this).parent().find('>ul').slideUp(250);
+			}
+			return false;
+		} else {
+			$topnavmn.children('a').removeClass('on');
+			$topnavsbmn.slideUp(250);
+			$(this).addClass('on');
+		}
+	});
+
+	var $topnavmnDepth2 = $topnavsbmn.find('>li'),
+		$topnavsbmnDepth2 = $topnavmnDepth2.find('>ul');
+	$topnavmnDepth2.children('a').click(function() {
+		if ($(this).parent().is('li:has("ul")')) {
+			if (!$(this).is('.on')) {
+				$topnavmnDepth2.children('a').removeClass('on');
+				$topnavsbmnDepth2.slideUp(200);
+				$(this).addClass('on');
+				$(this).parent().find('>ul').slideDown(200).find('>li a').removeClass('on');
+			} else {
+				$(this).removeClass('on');
+				$(this).parent().find('>ul').slideUp(200);
+			}
+
+			if ( $(this).parent().attr('LINK')==undefined ) {
+				return false;
+			}
+		} else {
+			$topnavmnDepth2.children('a').removeClass('on');
+			$topnavsbmnDepth2.slideUp(200);
+			$(this).addClass('on');
+		}
+	});
+
+	var $topnavCurrent1 = $topnav.find('.nvparam'+navCurrentParam1);
+	var $topnavCurrent2 = $topnav.find('.nvparam'+navCurrentParam1+'_'+navCurrentParam2);
+	var $topnavCurrent3 = $topnav.find('.nvparam'+navCurrentParam1+'_'+navCurrentParam2+'_'+navCurrentParam3);
+
+	function currentReset() {
+		/* if (!$topnavCurrent1.children('a').is('.on')) {
+			$topnavmn.children('a').removeClass('on').parent().find('>ul').hide().find('>li a').removeClass('on');
+			$topnavCurrent1.children('a').addClass('on').parent().find('>ul').show();
+			$topnavCurrent2.children('a').addClass('on').parent().find('>ul').show();
+			$topnavCurrent3.children('a').addClass('on');
+		} */
+		$topnavmn.find('ul').hide();
+		var $on = $topnav.find(".on");
+		if ( $on.length > 0 ) {
+			var $ul = $on.parents("ul");
+			$ul.show();
+			$ul.prev("a").addClass("on");
+		}
+	}
+	currentReset();
+});
+
+
+
+
+
+
+
+
+
+/* 운행현황 */
+$(function(){
+	$("#right.sub .closeBtn span img").attr("src", "/kor/resources/images/common/btn_run_close.png");
+	$("#right .closeBtn span").click(function(){
+		var btn = $(this);
+		var btnImg = btn.find("img");
+
+		if ( btn.hasClass("open") == true ) {
+			$("#right").stop(true).animate({'right':'0'}, 500);
+			btnImg.attr("src","/kor/resources/images/common/btn_run_close.png");
+			btn.removeClass("open");
+			btn.addClass("close");
+		} else if ( btn.hasClass("close") == true ) {
+			$("#right").stop(true).animate({'right':'-267'}, 500);
+			btnImg.attr("src","/kor/resources/images/common/btn_run.png");
+			btn.removeClass("close");
+			btn.addClass("open");
+		}
+	});
+});
+
+
+
+
+
+
+
+/*
+//모바일 사이버스테이션
+$(document).ready(function(){
+	//마스크
+	var handler = function(e){
+		e.preventDefault();
+	}
+	function wrapWindowByMask(){
+		var maskHeight = $(document).height();
+		var maskWidth = $(window).width();
+
+		$('#mask').css({'width':maskWidth,'height':maskHeight});
+		$('#mask').fadeTo("slow",0.6);
+
+	}
+
+	$('.search_area').hide();
+	$(function() {
+		$(".btn_search.search_open").click(function(e){
+			$('.search_area').show();
+			$("body").css("overflow","hidden");
+			if ($(this).hasClass("active")) {
+				$(this).removeClass("active");
+				e.preventDefault();
+				$('#mask').hide();
+				$('.search_area').hide();
+				$(window).unbind('touchmove', handler);
+
+			} else {
+				$(this).addClass("active");
+				e.preventDefault();
+				wrapWindowByMask();
+				$(window).bind('touchmove', handler);
+			}
+
+		$('.btn_search.search_close').click(function(){
+			$(this).parent().parent().find('a.search_open').focus();
+			$("body").css("overflow","auto");
+			$(".search_open").removeClass("active");
+			$('.search_area').hide();
+			$('#mask').hide();
+		});
+		return false;
+		});
+
+		var allmenuWidth = $(window).width();
+		$('.mobile-cs').css({'right' : -allmenuWidth});
+		$(".btn_right.open").click(function(e){
+			var navheight = $('.mobile-cs > div').height()+100;
+			var bodyheight = $('body').height();
+			if(navheight > bodyheight){
+				$('#wrap').css('height',navheight)
+			}else{
+
+			}
+
+			$("body").css("overflow-y","hidden");
+			$(".mobile-cs").css("display","block");
+
+			if ($(this).hasClass("active")) {
+				$(this).removeClass("active");
+				//$('#wrap').css('height','100%');
+				e.preventDefault();
+				$('#mask').hide();
+				$(".mobile-cs").animate({right:-allmenuWidth},200);
+
+			} else {
+				$(this).addClass("active");
+				e.preventDefault();
+				wrapWindowByMask();
+				$('#mask').css({'background' : 'none' , "margin-right" : "280px"});
+				$(".mobile-cs").animate({right:0},200);
+			}
+
+			return false;
+		});
+		$('.btn_right.close').click(function(){
+			$("body").css("overflow-y","auto");
+			$(".mobile-cs").animate({right:-allmenuWidth},200);
+			$(".mobile-cs").css("display","none");
+			$(".btn_right.open").removeClass("active");
+			$('#mask').css({'background' : '#000' , "margin-right" : "0px"});
+			$('#mask').hide();
+
+			return false;
+		});
+
+
+		$('#mask').click(function () {
+			$(this).css({'background' : '#000' , "margin-right" : "0px"});
+			$(this).hide();
+			$("body").css("overflow","auto");
+			$(".mobile-cs").animate({right:-allmenuWidth},200);
+			$(".mobile-cs").css("display","none");
+			$(".btn_right.open").removeClass("active");
+			$(".search_open").removeClass("active");
+			$(this).parent().parent().find(".search_area").hide();
+			$(window).unbind('touchmove', handler);
+		});
+	});
+
+	$('.m-global_site li:last-child a').css({'background' : 'none'});
+
+});*/
+/*
+$(document).bind('mobileinit', function(){
+	// jquery mobile ajax 끄기
+	$.mobile.ajaxEnabled = false;
+});
+
+$(window).resize(function() {
+	 //var allmenuWidth = $(window).width();
+	 if($(document.activeElement).attr('type') === 'text') {
+
+    } else {
+       $("body").css("overflow","auto");
+		//$(".mobile-cs").animate({right:-allmenuWidth},100);
+		//$(".mobile-cs").css ('right',-allmenuWidth);
+		$(".btn_right.open").removeClass("active");
+
+		$(".search_open").removeClass("active");
+		$('.search_area').hide();
+
+		$('#mask').hide();
+    }
+});*/
+
+
+
+//레이어 팝업 열고 닫기
+function layeropen(layerName) {
+	var layer = document.getElementById("layer");
+	var divs = layer.getElementsByTagName("div");
+	var display_stage;
+
+	for (i = 0; i < divs.length; i++) {
+		display_stage = divs[i].style.display;
+
+		if(display_stage == "block") {
+			divs[i].style.display = "none";
+			break;
+		}
+	}
+	document.getElementById(layerName).style.display = "block";
+}
+function layerClose(parentObj) {
+	parentObj.style.display = "none";
+}
+
+
+
+
+
+
+// 사이버스테이션 실시간 열차 정보
+jQuery(function($){
+	var layerWindow = $('.moduleLayer');
+	var layer = $('.rt_layer');
+
+	// Show Hide
+	$('.layer_trigger').click(function(){
+		layerWindow.addClass('open');
+	});
+	$('.rt_layer .close').click(function(){
+		layerWindow.removeClass('open');
+	});
+
+	// Hide Window
+	layerWindow.find('>.bg').mousedown(function(event){
+	layerWindow.removeClass('close');
+	return false;
+	});
+
+});
+
+
+
+
+
+
+//탭메뉴
+$(document).ready(function() {
+
+	//Default Action
+	$(".tab_content").hide(); //Hide all content
+	$("ul.tabs li:first").addClass("active").show(); //Activate first tab
+	$(".tab_content:first").show(); //Show first tab content
+
+	//On Click Event
+	$("ul.tabs li").click(function() {
+		$("ul.tabs li").removeClass("active"); //Remove any "active" class
+		$(this).addClass("active"); //Add "active" class to selected tab
+		$(".tab_content").hide(); //Hide all tab content
+		var activeTab = $(this).find("a").attr("href"); //Find the rel attribute value to identify the active tab + content
+		$(activeTab).fadeIn(); //Fade in the active content
+		return false;
+	});
+
+
+
+	//Default Action
+
+	$(".subtab_content").hide(); //Hide all content
+	$("ul.subCybertabs li:first").addClass("active").show(); //Activate first tab
+	$(".subtab_content:first").show(); //Show first tab content
+
+	//On Click Event
+	$("ul.subCybertabs li").click(function() {
+		$("ul.subCybertabs li").removeClass("active"); //Remove any "active" class
+		$(this).addClass("active"); //Add "active" class to selected tab
+		$(".subtab_content").hide(); //Hide all tab content
+		var activeTab = $(this).find("a").attr("href"); //Find the rel attribute value to identify the active tab + content
+		$(activeTab).fadeIn(); //Fade in the active content
+		return false;
+	});
+
+
+
+
+	//서브페이지 사이버스테이션 탭메뉴
+	//Default Action
+	$(".cyberStationtab_content").hide(); //Hide all content
+	$("ul.cyberStation_tabs li:first").addClass("active").show(); //Activate first tab
+	$(".cyberStationtab_content:first").show(); //Show first tab content
+
+	//On Click Event
+	$("ul.cyberStation_tabs li").click(function() {
+		$("ul.cyberStation_tabs li").removeClass("active"); //Remove any "active" class
+		$(this).addClass("active"); //Add "active" class to selected tab
+		$(".cyberStationtab_content").hide(); //Hide all tab content
+		var activeTab = $(this).find("a").attr("href"); //Find the rel attribute value to identify the active tab + content
+		$(activeTab).fadeIn(); //Fade in the active content
+		return false;
+	});
+
+	//Default Action
+	$(".hourtab_content").hide(); //Hide all content
+	$("ul.hour_tabs li:first").addClass("active").show(); //Activate first tab
+	$(".hourtab_content:first").show(); //Show first tab content
+
+	//On Click Event
+	$("ul.hour_tabs li").click(function() {
+		$("ul.hour_tabs li").removeClass("active"); //Remove any "active" class
+		$(this).addClass("active"); //Add "active" class to selected tab
+		$(".hourtab_content").hide(); //Hide all tab content
+		var activeTab = $(this).find("a").attr("href"); //Find the rel attribute value to identify the active tab + content
+		$(activeTab).fadeIn(); //Fade in the active content
+		return false;
+	});
+
+
+
+	//모바일 사이버스테이션 탭메뉴
+	//Default Action
+	$(".mob_cyberStationtab_content").hide(); //Hide all content
+	$("ul.mob_cyberStation_tabs li:first").addClass("active").show(); //Activate first tab
+	$(".mob_cyberStationtab_content:first").show(); //Show first tab content
+
+	//On Click Event
+	$("ul.mob_cyberStation_tabs li").click(function() {
+		$("ul.mob_cyberStation_tabs li").removeClass("active"); //Remove any "active" class
+		$(this).addClass("active"); //Add "active" class to selected tab
+		$(".mob_cyberStationtab_content").hide(); //Hide all tab content
+		var activeTab = $(this).find("a").attr("href"); //Find the rel attribute value to identify the active tab + content
+		$(activeTab).fadeIn(); //Fade in the active content
+		return false;
+	});
+
+	//Default Action
+	$(".mob_hourtab_content").hide(); //Hide all content
+	$("ul.mob_hour_tabs li:first").addClass("active").show(); //Activate first tab
+	$(".mob_hourtab_content:first").show(); //Show first tab content
+
+	//On Click Event
+	$("ul.mob_hour_tabs li").click(function() {
+		$("ul.mob_hour_tabs li").removeClass("active"); //Remove any "active" class
+		$(this).addClass("active"); //Add "active" class to selected tab
+		$(".mob_hourtab_content").hide(); //Hide all tab content
+		var activeTab = $(this).find("a").attr("href"); //Find the rel attribute value to identify the active tab + content
+		$(activeTab).fadeIn(); //Fade in the active content
+		return false;
+	});
+
+
+
+	//역정보 탭메뉴
+	//Default Action
+	$(".stationInfo_tab_content").hide(); //Hide all content
+	$("ul.stationInfo_tabs li:first").addClass("active").show(); //Activate first tab
+	$(".stationInfo_tab_content:first").show(); //Show first tab content
+
+	//On Click Event
+	$("ul.stationInfo_tabs li").click(function() {
+		$("ul.stationInfo_tabs li").removeClass("active"); //Remove any "active" class
+		$(this).addClass("active"); //Add "active" class to selected tab
+		$(".stationInfo_tab_content").hide(); //Hide all tab content
+		var activeTab = $(this).find("a").attr("href"); //Find the rel attribute value to identify the active tab + content
+		$(activeTab).fadeIn(); //Fade in the active content
+		return false;
+	});
+
+	//Default Action
+	$(".stationInfo_hourtab_content").hide(); //Hide all content
+	$("ul.stationInfo_hour_tabs li:first").addClass("active").show(); //Activate first tab
+	$(".stationInfo_hourtab_content:first").show(); //Show first tab content
+
+	//On Click Event
+	$("ul.stationInfo_hour_tabs li").click(function() {
+		$("ul.stationInfo_hour_tabs li").removeClass("active"); //Remove any "active" class
+		$(this).addClass("active"); //Add "active" class to selected tab
+		$(".stationInfo_hourtab_content").hide(); //Hide all tab content
+		var activeTab = $(this).find("a").attr("href"); //Find the rel attribute value to identify the active tab + content
+		$(activeTab).fadeIn(); //Fade in the active content
+		return false;
+	});
+
+
+});
+
+
+
+
+
+
+
+//관련사이트
+$(document).ready(function(){
+	$('.family_site > dl > dd > div dl dd a:last-child').css({'background' : 'none'});
+	$(".family_site a.close").hide();
+	$(".related_org a.close").hide();
+	var sitelink2 = $('.family_site');
+
+    sitelink2.find("a.open").click(function (){
+    	$(this).hide();
+		$(this).next("a.close").show();
+		$('.related_org').find('>dl>dd').hide();
+		$('.related_org').find("a.close").hide();
+		$('.related_org').find("a.open").show();
+		$(this).parent().next("dd").show();
+    });
+
+    sitelink2.find("a.close").click(function (){
+		$(this).hide();
+		$(this).prev("a.open").show();
+    	$(this).parent().next("dd").hide();
+    });
+
+	sitelink2.find("a.close2").click(function (){
+    	$(this).parent().parent("dd").hide();
+		$(this).parent().parent().parent().find('dt a.close').hide();
+		$(this).parent().parent().parent().find("dt a.open").show();
+		$('.related_org').find("a.open").focus();
+    });
+
+//유관기관
+	var sitelink3 = $('.related_org');
+
+    sitelink3.find("a.open").click(function (){
+    	$(this).hide();
+		$(this).next("a.close").show();
+		$('.family_site').find('>dl>dd').hide();
+		$('.family_site').find("a.close").hide();
+		$('.family_site').find("a.open").show();
+		$(this).parent().next("dd").show();
+    });
+
+    sitelink3.find("a.close").click(function (){
+		$(this).hide();
+		$(this).prev("a.open").show();
+    	$(this).parent().next("dd").hide();
+    });
+	sitelink3.find("a.close2").click(function (){
+    	$(this).parent().parent("dd").hide();
+		$(this).parent().parent().parent().find('dt a.close').hide();
+		$(this).parent().parent().parent().find("dt a.open").show();
+		$('.serviceLink li:first-child').find("a").focus();
+    });
+
+});
+
+
+

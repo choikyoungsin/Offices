@@ -1,0 +1,156 @@
+$(document).ready(function(){
+
+  //match height
+  $(".match_h > *").matchHeight();
+
+  // Gnb over function
+  $('.gnb > li').on('mouseover',function(){
+    $(this).find('.submenu').stop().slideDown();
+  });
+
+  $('.gnb > li').on('mouseout',function(){
+    $(this).find('.submenu').stop().slideUp();
+  });
+
+  // All menu
+  $('.all-menu-btn').on('click', function(){
+    $(this).toggleClass('on');
+    if($(this).hasClass('on')){
+      $('.allmenu').fadeIn();
+    }else{
+      $('.allmenu').fadeOut();
+    }
+    if($('body').hasClass('notScroll')){
+      $("body").removeClass('notScroll');
+    }else{
+      $("body").addClass('notScroll');
+    }
+  });
+
+  let winW = $(window).width();
+  if(winW < 642){
+    $('.all-row').children('a').attr('href','javascript:void(0)');
+    $('.all-row>a').on('click',function(){
+      $('.allmenu-ul').slideUp();
+      $(this).siblings('.allmenu-ul').slideToggle();
+    });
+  }
+
+  // Side Menu
+  $('.mo-sideMenu').on('click',function(){
+    if($('#SideMenu').hasClass('on')){
+      $('#SideMenu').removeClass('on');
+      $('#SideMenu_dim').fadeOut(200);
+      $('.mo-sideMenu').find('img').attr('src','/kor/resources/img/icon-left.png');
+    }else{
+      $('#SideMenu').addClass('on');
+      $('#SideMenu_dim').fadeIn(200);
+      $('.mo-sideMenu').find('img').attr('src','/kor/resources/img/icon-right1.png');
+    }
+  });
+
+  // Main slide
+  var $Mslide = $('.m-sl'),
+      $Mslide_prev_tg = $(".m-sl-prev"),
+      $Mslide_next_tg = $(".m-sl-next"),
+      $Mslide_pause = $(".m-sl-pause");
+
+  $Mslide.slick({
+    infinite : true,
+    slidesToShow : 1,
+    slidesToScroll : 1,
+    speed : 1000,
+    autoplay: true,
+    autoplaySpeed: 3500,
+  }).on('beforeChange', function(event, slick, currentSlide, nextSlide){
+		var slideIndex = nextSlide;
+        slidenum = slideIndex + 1;
+
+		$('.m-sl-cur').text(slidenum);
+	});
+
+  // > controller
+  var $Mslide_prev = $Mslide.find(".slick-prev"),
+      $Mslide_next = $Mslide.find(".slick-next");
+
+  // >> prev, next
+  $Mslide_prev_tg.on('click', function(){
+    $Mslide_prev.trigger('click');
+  });
+  $Mslide_next_tg.on('click', function(){
+    $Mslide_next.trigger('click');
+  });
+
+  // >> pause, play
+  $Mslide_pause.on('click', function(){
+    if($(this).hasClass("pause")){
+      $(this).removeClass("pause");
+      $Mslide.slick('slickPlay');
+    }else{
+      $(this).addClass("pause");
+      $Mslide.slick('slickPause');
+    }
+  });
+
+  // 자주 찾는 정보 탭기능
+  $('.info-tab-ul li').on('click',function(){
+    let th = $(this).index();
+    $('.info-tab-ul').find('li').removeClass('active');
+    $(this).addClass('active');
+    $('.info-tab-cont').hide();
+    $('.info-tab-cont').eq(th).show();
+  });
+
+  // 뉴스 정보 탭기능
+  $('.news-tab-ul li').on('click',function(){
+    let th = $(this).index();
+    $('.news-tab-ul').find('li').removeClass('active');
+    $(this).addClass('active');
+    $('.news-tab-cont').hide();
+    $('.news-tab-cont').eq(th).show();
+  });
+
+  // Pop up zone slide
+  var $pop_slide = $('.pop-sl'),
+      $pop_slide_prev_tg = $(".pop-prev"),
+      $pop_slide_next_tg = $(".pop-next"),
+      $pop_slide_pause = $(".pop-pause");
+
+  $pop_slide.slick({
+    infinite : true,
+    slidesToShow : 1,
+    slidesToScroll : 1,
+    speed : 500,
+    autoplay: true,
+    autoplaySpeed: 2000,
+  }).on('beforeChange', function(event, slick, currentSlide, nextSlide){
+		var slideIndex = nextSlide;
+        slidenum = slideIndex + 1;
+
+		$('.pop-cur').text(slidenum);
+	});
+
+  // > controller
+  var $pop_slide_prev = $pop_slide.find(".slick-prev"),
+      $pop_slide_next = $pop_slide.find(".slick-next");
+
+  // >> prev, next
+  $pop_slide_prev_tg.on('click', function(){
+    $pop_slide_prev.trigger('click');
+  });
+  $pop_slide_next_tg.on('click', function(){
+    $pop_slide_next.trigger('click');
+  });
+
+  // >> pause, play
+  $pop_slide_pause.on('click', function(){
+    if($(this).hasClass("pause")){
+      $(this).removeClass("pause");
+      $pop_slide.slick('slickPlay');
+    }else{
+      $(this).addClass("pause");
+      $pop_slide.slick('slickPause');
+    }
+  });
+
+});// document ready end
